@@ -1,10 +1,9 @@
-#include <stdio.h>
+include <stdio.h>
 #include <stdlib.h>
 
 struct node {
     int data;
     struct node *next;
-    struct node *prev;
 };
 
 struct node *head = NULL;
@@ -12,43 +11,41 @@ struct node *head = NULL;
 void append(int data) {
     struct node *newNode = (struct node *)malloc(sizeof(struct node));
     newNode->data = data;
-    newNode->next = NULL;
-    newNode->prev = NULL;
 
     if (head == NULL) {
         head = newNode;
+        newNode->next = head;   
     } else {
         struct node *temp = head;
-        while (temp->next != NULL) {
+        while (temp->next != head) {
             temp = temp->next;
         }
         temp->next = newNode;
-        newNode->prev = temp;
+        newNode->next = head;  
     }
 }
 
 void display() {
-    struct node *temp = head;
-    while (temp != NULL) {
-        printf("%d ", temp->data);
-        temp = temp->next;
-    }
-}
-
-void backward() {
-    struct node *temp = head;
-
-    if (temp == NULL)
+    if (head == NULL)
         return;
 
-    while (temp->next != NULL) {
-        temp = temp->next;
-    }
-
-    while (temp != NULL) {
+    struct node *temp = head;
+    do {
         printf("%d ", temp->data);
-        temp = temp->prev;
-    }
+        temp = temp->next;
+    } while (temp != head);
+}
+
+
+void backward(struct node *temp) {
+    static int first = 1;
+
+    if (temp == head && !first)
+        return;
+
+    first = 0;
+    backward(temp->next);
+    printf("%d ", temp->data);
 }
 
 int main() {
@@ -66,7 +63,14 @@ int main() {
     display();
 
     printf("\nBackward Display: ");
-    backward();
+    if (head != NULL)
+        backward(head);
 
     return 0;
 }
+
+
+    
+
+
+   
